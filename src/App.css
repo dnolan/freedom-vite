@@ -1,0 +1,101 @@
+div.title {
+  /* background-color: #141414; */
+  margin-top: 40px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: goldenrod;
+  flex-wrap: wrap;
+}
+
+div.title div {  
+  color: rgb(85, 63, 7);
+}
+
+div.term {
+  display: flex;
+  align-items: center;
+  gap: 5px 20px;
+  flex-wrap: wrap;
+}
+
+div.term > .week {
+  font-size: 0.8rem;
+}
+
+.week > .title {  
+  display: flex;
+  align-items: center;    
+  gap: 5px;
+}
+
+.week > .title > .month {
+  color: lightslategray;
+  font-size: 0.7rem;
+}
+
+div.term > .week > .days {
+  gap: 4px;
+  display: flex;  
+}
+
+.days .day {
+  margin: 2px;
+  border : 1px solid #9c1f1f;
+  width: 25px;
+  height: 25px;
+  font-size: 0.8rem;
+  line-height: 25px;
+  color: #9c1f1f;
+  background-color: rgb(29, 0, 0);
+  text-align: center;
+  content-visibility: hidden;
+}
+
+.day:hover  {
+  content-visibility: visible;
+  cursor: pointer;
+}
+
+.days .day.completed {
+  border : 1px solid lightgreen;
+  background-color: darkgreen;
+  color: white;
+}
+
+.days  .day.holiday,
+.days.holiday .day {
+  background-color: rgb(20, 54, 20);
+  border: 1px solid rgb(44, 122, 74);
+  color: rgb(74, 206, 102);
+}
+
+.key h2 {
+  margin-top: 20px;
+}
+
+.key  .key-entry {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.break {
+  flex-basis: 100%;
+  width: 0;
+}
+.term-status {
+  display: flex;  
+  align-items: center;
+  justify-content: center;  
+  gap: 20px;  
+  font-size: 0.8rem;
+  color: rgb(116, 96, 46);
+}
+
+.term-status .value {
+  font-weight: bold;
+  margin-left: 5px;
+  color: rgb(167, 124, 16);
+}
