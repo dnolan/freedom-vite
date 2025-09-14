@@ -1,3 +1,39 @@
+:root {
+  --day-completed: darkgreen ;
+  --day-completed-border: lightgreen;
+  --day-future: #290505;
+  --day-future-border: #9c1f1f;
+  --day-holiday: #144a14;
+  --day-holiday-border: #2c7a4a;
+  --day-text-holiday: #4ace66;
+  --day-text-future: #9c1f1f;
+  --day-text-completed: #ffffff;
+  --text-primary: goldenrod;
+  --text-secondary: rgb(85, 63, 7);
+  --text-tertiary: lightslategray;
+  --term-status-text: rgb(116, 96, 46);
+  --term-status-value: rgb(167, 124, 16);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --day-completed: rgb(168, 226, 168) ;
+    --day-completed-border: rgb(77, 170, 77);
+    --day-future: #f8d7d7;
+    --day-future-border: #f5a9a9;
+    --day-holiday: #d4f4d4;
+    --day-holiday-border: #a9e2a9;
+    --day-text-holiday: #1b6e1b;
+    --day-text-future: #a94442;
+    --day-text-completed: #ffffff;
+    --text-primary: rgb(0, 0, 0);
+    --text-secondary: rgb(85, 63, 7);
+    --text-tertiary: lightslategray;
+    --term-status-text: rgb(116, 96, 46);
+    --term-status-value: rgb(218, 202, 164);
+  }
+}
+
 div.title {
   /* background-color: #141414; */
   margin-top: 40px;
@@ -5,12 +41,12 @@ div.title {
   display: flex;
   align-items: center;
   gap: 20px;
-  color: goldenrod;
+  color: var(--text-primary);
   flex-wrap: wrap;
 }
 
-div.title div {  
-  color: rgb(85, 63, 7);
+div.title div {
+  color: var(--text-secondary);
 }
 
 div.term {
@@ -31,7 +67,7 @@ div.term > .week {
 }
 
 .week > .title > .month {
-  color: lightslategray;
+  color: var(--text-tertiary);
   font-size: 0.7rem;
 }
 
@@ -42,13 +78,13 @@ div.term > .week > .days {
 
 .days .day {
   margin: 2px;
-  border : 1px solid #9c1f1f;
+  border : 1px solid var(--day-future-border);
   width: 25px;
   height: 25px;
   font-size: 0.8rem;
   line-height: 25px;
-  color: #9c1f1f;
-  background-color: rgb(29, 0, 0);
+  color: var(--day-text-future);
+  background-color: var(--day-future);
   text-align: center;
   content-visibility: hidden;
 }
@@ -59,16 +95,16 @@ div.term > .week > .days {
 }
 
 .days .day.completed {
-  border : 1px solid lightgreen;
-  background-color: darkgreen;
+  border : 1px solid var(--day-completed-border);
+  background-color: var(--day-completed);
   color: white;
 }
 
 .days  .day.holiday,
 .days.holiday .day {
-  background-color: rgb(20, 54, 20);
-  border: 1px solid rgb(44, 122, 74);
-  color: rgb(74, 206, 102);
+  background-color: var(--day-holiday);
+  border: 1px solid var(--day-holiday-border);
+  color: var(--day-text-holiday);
 }
 
 .key h2 {
@@ -91,11 +127,11 @@ div.term > .week > .days {
   justify-content: center;  
   gap: 20px;  
   font-size: 0.8rem;
-  color: rgb(116, 96, 46);
+  color: var(--term-status-text);
 }
 
 .term-status .value {
   font-weight: bold;
   margin-left: 5px;
-  color: rgb(167, 124, 16);
+  color: var(--term-status-value);
 }
