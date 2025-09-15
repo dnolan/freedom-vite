@@ -3,9 +3,37 @@
 import './App.css'
 import clsx from "clsx";
 import type { Term, Calendar, Week, Day, Holiday } from "./types";
-import {terms} from "./terms";
+import { terms } from "./terms";
+import { useEffect, useState } from 'react';
+
+//https://www.gov.uk/bank-holidays.json
 
 export default function App() {
+
+  type BankHoliday = {
+    id: string;
+    title: string;
+    date: string;
+    notes: string;
+  };
+
+  const [bankHolidays, setBankHolidays] = useState<BankHoliday[] | null>(null);
+
+  // Fetch bank holidays from the UK government API
+  async function fetchBankHolidays() {
+    const response = await fetch("https://www.gov.uk/bank-holidays.json");
+    const data = await response.json();
+    return data;
+  }
+
+
+  useEffect(() => {
+      const fetchData = async () => {
+        const data = await fetchBankHolidays();
+        setBankHolidays(data["england-and-wales"].events);
+      };
+      fetchData();
+  }, []);
 
   function getEndOfWeek(date: Date): Date {
     const next = new Date(date);
@@ -31,12 +59,12 @@ export default function App() {
     const weeks = buildWeeks(t);
 
     const holidays = endOfTermHolidays(t, index)
-    
+
     // Janky
-    const holidayDays = 
-      weeks.reduce((acc, week) => acc 
-        + week.days.filter((d)  => d.holiday).length, 0) 
-        + holidays.reduce((acc, holiday) => acc + holiday.days.length, 0);
+    const holidayDays =
+      weeks.reduce((acc, week) => acc
+        + week.days.filter((d) => d.holiday).length, 0)
+      + holidays.reduce((acc, holiday) => acc + holiday.days.length, 0);
 
     const schoolDays = weeks.reduce((acc, week) => acc + week.days.filter(d => !d.holiday).length, 0);
     const completedDays = weeks.reduce((acc, week) => acc + week.days.filter(d => d.completed).length, 0);
@@ -45,9 +73,9 @@ export default function App() {
 
     const calendar: Calendar = {
       weeks: weeks,
-      count: weeks.length,  
-      holidays: holidays, 
-      stats : {
+      count: weeks.length,
+      holidays: holidays,
+      stats: {
         holidayDays: holidayDays,
         schoolDays: schoolDays,
         completedDays: completedDays,
@@ -55,7 +83,7 @@ export default function App() {
         totalDays: totalDays
       }
     };
-    
+
     return { ...t, calendar };
   });
 
@@ -80,7 +108,7 @@ export default function App() {
         weekStart.setDate(weekStart.getDate() + 7);
       }
     }
-    
+
     return weeks;
   }
 
@@ -111,14 +139,29 @@ export default function App() {
 
         const cutOff = new Date(currentDate);
         cutOff.setHours(14, 30, 0, 0);
-        
-        const holiday = currentDate < start;
+
+        let holiday: boolean = currentDate < start;
+        let holidayTitle: string | undefined = undefined;
+
+        let bankHoliday: BankHoliday | undefined = bankHolidays?.find((h: BankHoliday) => {
+          const holidayDate = new Date(h.date);
+          return holidayDate.toDateString() === currentDate.toDateString();
+        });
+
+        if (bankHoliday) {
+          holiday = true;
+          holidayTitle = bankHoliday.title;
+          console.log("Bank holiday on " + bankHoliday.date + " : " + bankHoliday.title);
+        }
+
+
         const completed = (cutOff < now) && !holiday;
 
         const day = {
           date: new Date(currentDate),
           completed,
-          holiday
+          holiday,
+          title: holidayTitle
         };
         weekdays.push(day); // Add a copy of the date
       }
@@ -132,18 +175,18 @@ export default function App() {
   function renderDaysOfWeek(week: Week) {
     return week.days.map((d: Day) => {
 
-      const className = clsx("day", 
-        d.completed && "completed", 
+      const className = clsx("day",
+        d.completed && "completed",
         d.holiday && "holiday",
       );
 
       return (
-        <span className={className} key={d.date.toLocaleDateString()}>{d.date.getDate()}</span>
+        <span className={className} key={d.date.toLocaleDateString()} title={d.title}>{d.date.getDate()}</span>
       )
     })
   }
 
-  function renderMonthNames(start : Date, end: Date) {
+  function renderMonthNames(start: Date, end: Date) {
     const months = [];
     const current = new Date(start.getFullYear(), start.getMonth());
 
@@ -186,10 +229,10 @@ export default function App() {
     })
   }
 
-  function renderTermStatus(calendar: Calendar) {    
-    
+  function renderTermStatus(calendar: Calendar) {
+
     const stats = calendar.stats;
-    
+
     if (!stats) return null;
 
     return (
@@ -205,14 +248,14 @@ export default function App() {
     );
   }
 
-  const renderTermWeeks  = function (calendar: Calendar) {
+  const renderTermWeeks = function (calendar: Calendar) {
     return (
       <div className="term">
         {renderWeeks(calendar.weeks)}
         {renderHoliday(calendar.holidays)}
         {renderTermStatus(calendar)}
       </div>
-    );  
+    );
   }
 
   const renderCalendar = function () {
