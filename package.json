@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "tsc -b && vite build && surge dist https://makeshift-line.surge.sh/"
   },
   "dependencies": {
     "clsx": "^2.1.1",
