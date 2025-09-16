@@ -3,34 +3,34 @@
   --day-completed-border: lightgreen;
   --day-future: #290505;
   --day-future-border: #9c1f1f;
-  --day-holiday: #144a14;
-  --day-holiday-border: #2c7a4a;
-  --day-text-holiday: #4ace66;
+  --day-holiday: #234674;
+  --day-holiday-border: #71a0dd;
+  --day-text-holiday: #71a0dd;
   --day-text-future: #9c1f1f;
   --day-text-completed: #ffffff;
   --text-primary: goldenrod;
-  --text-secondary: rgb(85, 63, 7);
+  --text-secondary: #553f07;
   --text-tertiary: lightslategray;
-  --term-status-text: rgb(116, 96, 46);
-  --term-status-value: rgb(167, 124, 16);
+  --term-status-text: #74602e;
+  --term-status-value: #a77c10;
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    --day-completed: rgb(168, 226, 168) ;
-    --day-completed-border: rgb(77, 170, 77);
+    --day-completed: #a8e2a8 ;
+    --day-completed-border: #4daa4d;
     --day-future: #f8d7d7;
     --day-future-border: #f5a9a9;
-    --day-holiday: #d4f4d4;
-    --day-holiday-border: #a9e2a9;
+    --day-holiday: #c1c9f8;
+    --day-holiday-border: #7482cf;
     --day-text-holiday: #1b6e1b;
     --day-text-future: #a94442;
-    --day-text-completed: #ffffff;
-    --text-primary: rgb(0, 0, 0);
-    --text-secondary: rgb(85, 63, 7);
+    --day-text-completed: #4daa4d;
+    --text-primary: #000000;
+    --text-secondary: #553f07;
     --text-tertiary: lightslategray;
-    --term-status-text: rgb(116, 96, 46);
-    --term-status-value: rgb(218, 202, 164);
+    --term-status-text: #74602e;
+    --term-status-value: #dacaa4;
   }
 }
 
@@ -97,7 +97,7 @@ div.term > .week > .days {
 .days .day.completed {
   border : 1px solid var(--day-completed-border);
   background-color: var(--day-completed);
-  color: white;
+  color: var(--day-text-completed);
 }
 
 .days  .day.holiday,
