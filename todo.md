@@ -1,5 +1,4 @@
 # Todo
-- [ ] Support light mode
 - [ ] change colour of red to orange then yellow as term nears end
 - [ ] show percentage of year completed
 - [ ] Add unit tests for date calculations
@@ -10,6 +9,7 @@
 - [ ] Set max-width of week title so it doesn't mess flow
 
 ## Completed
+- [x] Support light mode
 - [x] Swap to vite for static deployment
 - [x] Deploy to public site
 - [x] Mobile rendering
