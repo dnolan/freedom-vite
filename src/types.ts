@@ -28,6 +28,7 @@ type Day = {
   date: Date;
   completed: boolean;
   holiday: boolean;
+  title?: string;
 };
 
 type Holiday = {

@@ -4,11 +4,11 @@
 - [ ] Add unit tests for date calculations
 - [ ] show bank holidays and closures  
 - [ ] Tidy up theme
-- [ ] Load bank holidays
 - [ ] Use components for rendering
 - [ ] Set max-width of week title so it doesn't mess flow
 
 ## Completed
+- [x] Load bank holidays
 - [x] Support light mode
 - [x] Swap to vite for static deployment
 - [x] Deploy to public site
