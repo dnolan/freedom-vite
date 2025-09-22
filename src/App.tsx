@@ -6,8 +6,6 @@ import type { Term, Calendar, Week, Day, Holiday } from "./types";
 import { terms } from "./terms";
 import { useEffect, useState } from 'react';
 
-//https://www.gov.uk/bank-holidays.json
-
 export default function App() {
 
   type BankHoliday = {
@@ -19,13 +17,11 @@ export default function App() {
 
   const [bankHolidays, setBankHolidays] = useState<BankHoliday[] | null>(null);
 
-  // Fetch bank holidays from the UK government API
   async function fetchBankHolidays() {
     const response = await fetch("https://www.gov.uk/bank-holidays.json");
     const data = await response.json();
     return data;
   }
-
 
   useEffect(() => {
       const fetchData = async () => {
@@ -60,14 +56,16 @@ export default function App() {
 
     const holidays = endOfTermHolidays(t, index)
 
-    // Janky
-    const holidayDays =
-      weeks.reduce((acc, week) => acc
-        + week.days.filter((d) => d.holiday).length, 0)
-      + holidays.reduce((acc, holiday) => acc + holiday.days.length, 0);
+    let holidayDays =holidays.reduce((acc, holiday) => acc + holiday.days.length, 0);
+    let schoolDays = 0;
+    let completedDays = 0;
 
-    const schoolDays = weeks.reduce((acc, week) => acc + week.days.filter(d => !d.holiday).length, 0);
-    const completedDays = weeks.reduce((acc, week) => acc + week.days.filter(d => d.completed).length, 0);
+    for (const w of weeks) {
+      schoolDays += w.days.filter(d => !d.holiday).length;
+      completedDays += w.days.filter(d => d.completed).length;
+      holidayDays += w.days.filter(d => d.holiday).length;
+    }
+
     const percentDone = Math.round((completedDays / schoolDays) * 100);
     const totalDays = schoolDays + holidayDays;
 
