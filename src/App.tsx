@@ -260,7 +260,7 @@ export default function App() {
     return termWeeks.map(t => {
 
       return (
-        <section key={t.name}>
+        <section key={t.name} className="term-section">
           <div className="title">
             <h1>{t.name}</h1>
             <div>{t.start.toLocaleDateString("en-GB")} until {t.end.toLocaleDateString("en-GB")}</div>
