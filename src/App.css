@@ -1,18 +1,21 @@
 :root {
-  --day-completed: darkgreen ;
-  --day-completed-border: lightgreen;
-  --day-future: #290505;
-  --day-future-border: #9c1f1f;
-  --day-holiday: #234674;
-  --day-holiday-border: #71a0dd;
-  --day-text-holiday: #71a0dd;
-  --day-text-future: #9c1f1f;
-  --day-text-completed: #ffffff;
-  --text-primary: goldenrod;
-  --text-secondary: #553f07;
-  --text-tertiary: lightslategray;
-  --term-status-text: #74602e;
-  --term-status-value: #a77c10;
+  --day-completed: hsl(120, 100%, 10%) ;
+  --day-completed-border: hsl(120, 72%, 30%);
+  --day-text-completed: hsl(120, 100%, 20%);
+
+  --day-future: hsl(0, 95%, 10%);
+  --day-future-border: hsl(0, 95%, 30%);
+  --day-text-future: hsl(0, 95%, 20%);
+
+  --day-holiday: hsl(214, 54%, 10%);
+  --day-holiday-border: hsl(214, 61%, 30%);
+  --day-text-holiday: hsl(214, 61%, 20%);
+
+  --text-primary: hsl(0, 0%, 90%);
+  --text-secondary: hsl(45, 85%, 20%);
+  --text-tertiary: hsl(210, 14%, 50%);
+  --term-status-text: hsl(43, 43%, 32%);
+  --term-status-value: hsl(43, 83%, 36%);
 }
 
 @media (prefers-color-scheme: light) {
@@ -34,19 +37,29 @@
   }
 }
 
+.term-section {
+  background-color: hsl(0, 0%, 10%);
+  padding: 10px;
+  margin-top: 40px;
+  margin-right: 10px;
+  padding-bottom: 20px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, hsl(0, 0%, 10%) 0%, hsl(0, 0%, 5%) 100%);
+}
+
 div.title {
   /* background-color: #141414; */
-  margin-top: 40px;
+  /* margin-top: 40px; */
   font-size: 1rem;
   display: flex;
   align-items: center;
   gap: 20px;
-  color: var(--text-primary);
+  /* color: var(--text-primary); */
   flex-wrap: wrap;
 }
 
 div.title div {
-  color: var(--text-secondary);
+  /* color: var(--text-secondary); */
 }
 
 div.term {
@@ -57,6 +70,7 @@ div.term {
 }
 
 div.term > .week {
+  /* color: var(--text-secondary); */
   font-size: 0.8rem;
 }
 
@@ -74,6 +88,7 @@ div.term > .week {
 div.term > .week > .days {
   gap: 4px;
   display: flex;  
+  /* background-color: hsl(0, 0%, 20%); */
 }
 
 .days .day {
@@ -86,7 +101,12 @@ div.term > .week > .days {
   color: var(--day-text-future);
   background-color: var(--day-future);
   text-align: center;
-  content-visibility: hidden;
+}
+
+@media (hover: hover) {
+  .days .day {
+    content-visibility: hidden;
+  }
 }
 
 .day:hover  {
@@ -127,11 +147,11 @@ div.term > .week > .days {
   justify-content: center;  
   gap: 20px;  
   font-size: 0.8rem;
-  color: var(--term-status-text);
+  /* color: var(--term-status-text); */
 }
 
 .term-status .value {
   font-weight: bold;
   margin-left: 5px;
-  color: var(--term-status-value);
+  /* color: var(--term-status-value); */
 }
