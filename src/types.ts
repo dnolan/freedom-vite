@@ -8,7 +8,6 @@ type Term = {
 type Calendar = {
   weeks: Week[];
   count: number;
-  holidays: Holiday[];
   stats: {
     holidayDays: number;
     schoolDays: number;
@@ -22,6 +21,7 @@ type Week = {
   start: Date;
   end: Date;
   days: Day[];
+  holiday: boolean;
 };
 
 type Day = {
@@ -31,11 +31,5 @@ type Day = {
   title?: string;
 };
 
-type Holiday = {
-  start: Date;
-  end: Date;
-  days: Day[];
-};
 
-
-export type { Term, Calendar, Week, Day, Holiday };
+export type { Term, Calendar, Week, Day };

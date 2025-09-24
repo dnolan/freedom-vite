@@ -2,26 +2,16 @@
 
 import './App.css'
 import clsx from "clsx";
-import type { Term, Calendar, Week, Day, Holiday } from "./types";
+import type { Term, Calendar, Week, Day } from "./types";
 import { terms } from "./terms";
 import { useEffect, useState } from 'react';
+import { fetchBankHolidays } from './bankholidays';
+import type { BankHoliday } from './bankholidays';
+import { getEndOfWeek, getStartOfWeek, renderMonthNames } from './datehelpers';
+import { TermStatus } from './TermStatus';
 
 export default function App() {
-
-  type BankHoliday = {
-    id: string;
-    title: string;
-    date: string;
-    notes: string;
-  };
-
   const [bankHolidays, setBankHolidays] = useState<BankHoliday[] | null>(null);
-
-  async function fetchBankHolidays() {
-    const response = await fetch("https://www.gov.uk/bank-holidays.json");
-    const data = await response.json();
-    return data;
-  }
 
   useEffect(() => {
       const fetchData = async () => {
@@ -31,61 +21,43 @@ export default function App() {
       fetchData();
   }, []);
 
-  function getEndOfWeek(date: Date): Date {
-    const next = new Date(date);
-    next.setDate(next.getDate() + (5 - next.getDay() + 7) % 7);
-    return next;
-  }
-
-  function getStartOfWeek(date: Date): Date {
-    const prev = new Date(date);
-    const offset = prev.getDay();
-    if (offset == 1) {
-      return prev;
-    } else if (offset == 0) {
-      prev.setDate(prev.getDate() - 1);
-    } else {
-      prev.setDate(prev.getDate() - (offset + 1));
-    }
-    return prev;
-  }
-
   // Build each term into an array of weeks
-  const termWeeks = terms.map((t: Term, index: number) => {
-    const weeks = buildWeeks(t);
+  function buildTerms(terms: Term[]) {
+      
+      return terms.map((t: Term, index: number) => {
+        const weeks = [...buildWeeks(t), ...buildHolidayWeeks(t, index)] ;
 
-    const holidays = endOfTermHolidays(t, index)
+        const totals = weeks.reduce((acc, week) => {
+          acc.schoolDays += week.days.filter(d => !d.holiday).length;
+          acc.completedDays += week.days.filter(d => d.completed).length;
+          acc.holidayDays += week.days.filter(d => d.holiday).length;
+          return acc;
+        }, {schoolDays: 0, completedDays: 0, holidayDays: 0});
 
-    let holidayDays =holidays.reduce((acc, holiday) => acc + holiday.days.length, 0);
-    let schoolDays = 0;
-    let completedDays = 0;
+        const holidayDays = totals.holidayDays;
+        const schoolDays = totals.schoolDays;
+        const completedDays = totals.completedDays;
 
-    for (const w of weeks) {
-      schoolDays += w.days.filter(d => !d.holiday).length;
-      completedDays += w.days.filter(d => d.completed).length;
-      holidayDays += w.days.filter(d => d.holiday).length;
-    }
+        const percentDone = Math.round((completedDays / schoolDays) * 100);
+        const totalDays = schoolDays + holidayDays;
 
-    const percentDone = Math.round((completedDays / schoolDays) * 100);
-    const totalDays = schoolDays + holidayDays;
+        const calendar: Calendar = {
+          weeks: weeks,
+          count: weeks.length,
+          stats: {
+            holidayDays: holidayDays,
+            schoolDays: schoolDays,
+            completedDays: completedDays,
+            percentDone: percentDone,
+            totalDays: totalDays
+          }
+        };
 
-    const calendar: Calendar = {
-      weeks: weeks,
-      count: weeks.length,
-      holidays: holidays,
-      stats: {
-        holidayDays: holidayDays,
-        schoolDays: schoolDays,
-        completedDays: completedDays,
-        percentDone: percentDone,
-        totalDays: totalDays
-      }
-    };
+        return { ...t, calendar };
+      })
+  };
 
-    return { ...t, calendar };
-  });
-
-  function buildWeeks(t: Term) {
+  function buildWeeks(t: Term, holiday: boolean = false) : Week[] {
     const weeks: Week[] = [];
     const weekStart = new Date(t.start);
     const end = new Date(t.end);
@@ -96,7 +68,8 @@ export default function App() {
       weeks.push({
         start: new Date(weekStart),
         end: new Date(weekEnd),
-        days: weekDays(weekStart, weekEnd)
+        days: weekDays(weekStart, weekEnd, holiday),
+        holiday: holiday
       });
 
       if (weekStart.getDay() !== 1) {
@@ -110,7 +83,8 @@ export default function App() {
     return weeks;
   }
 
-  function endOfTermHolidays(t: Term, index: number) {
+  // Build holiday weeks between terms
+  function buildHolidayWeeks(t: Term, index: number) : Week[] {
 
     if (terms.length > index + 1) {
       // This is janky, if the first day is not a monday
@@ -119,13 +93,13 @@ export default function App() {
       start.setDate(start.getDate() + 3);
       const end = new Date(nextTerm.start);
       end.setDate(end.getDate() - 3);
-      return buildWeeks({ start, end } as Term);
+      return buildWeeks({ start, end } as Term, true);
     }
 
     return [];
   }
 
-  function weekDays(start: Date, end: Date) {
+  function weekDays(start: Date, end: Date, allHoliday: boolean = false) : Day[] {
     const weekdays = [];
     const currentDate = getStartOfWeek(start); //new Date(start);
     const now = new Date();
@@ -138,8 +112,8 @@ export default function App() {
         const cutOff = new Date(currentDate);
         cutOff.setHours(14, 30, 0, 0);
 
-        let holiday: boolean = currentDate < start;
-        let holidayTitle: string | undefined = undefined;
+        let holiday: boolean = allHoliday || currentDate < start;
+        let title: string | undefined = undefined;
 
         let bankHoliday: BankHoliday | undefined = bankHolidays?.find((h: BankHoliday) => {
           const holidayDate = new Date(h.date);
@@ -148,10 +122,8 @@ export default function App() {
 
         if (bankHoliday) {
           holiday = true;
-          holidayTitle = bankHoliday.title;
-          console.log("Bank holiday on " + bankHoliday.date + " : " + bankHoliday.title);
+          title = bankHoliday.title;
         }
-
 
         const completed = (cutOff < now) && !holiday;
 
@@ -159,7 +131,7 @@ export default function App() {
           date: new Date(currentDate),
           completed,
           holiday,
-          title: holidayTitle
+          title: title
         };
         weekdays.push(day); // Add a copy of the date
       }
@@ -184,27 +156,21 @@ export default function App() {
     })
   }
 
-  function renderMonthNames(start: Date, end: Date) {
-    const months = [];
-    const current = new Date(start.getFullYear(), start.getMonth());
-
-    while (current <= end) {
-      months.push(current.toLocaleString('en-GB', { month: 'short', year: '2-digit' }));
-      current.setMonth(current.getMonth() + 1);
-    }
-
-    return months.map(m => <span key={m} className="month">{m}</span>);
-  }
 
   function renderWeeks(weeks: Week[]) {
     return weeks.map((w: Week, index: number) => {
+
+      const daysClass = clsx("days",
+        w.holiday && "holiday",
+      );
+
       return (
         <div className="week" key={w.start.toLocaleDateString()}>
           <span className="title">
-            <span className="weekName">Week {index + 1}</span>
+            { w.holiday != true ? <span className="weekName">Week {index + 1}</span> : <span className="weekName">Holiday</span> } 
             {renderMonthNames(w.start, w.end)}
           </span>
-          <div className="days">
+          <div className={daysClass}>
             {renderDaysOfWeek(w)}
           </div>
         </div>
@@ -212,52 +178,17 @@ export default function App() {
     })
   }
 
-  function renderHoliday(holidays: Holiday[]) {
-    return holidays.map((h: Holiday) => {
-      return (
-        <div className="week" key={h.start.toLocaleDateString()}>
-          <span className="title">
-            {renderMonthNames(h.start, h.end)}
-          </span>
-          <div className="days holiday">
-            {renderDaysOfWeek(h)}
-          </div>
-        </div>
-      )
-    })
-  }
-
-  function renderTermStatus(calendar: Calendar) {
-
-    const stats = calendar.stats;
-
-    if (!stats) return null;
-
-    return (
-      <>
-        <div className="break"></div>
-        <div className="term-status">
-          <div>Done <span className="value">{stats.completedDays} of <span className="value">{stats.totalDays}</span></span></div>
-          <div>Holidays <span className="value">{stats.holidayDays}</span></div>
-          <div>Remaining <span className="value">{stats.schoolDays - stats.completedDays}</span></div>
-          <div>Completed <span className="value">{stats.percentDone}%</span></div>
-        </div>
-      </>
-    );
-  }
-
   const renderTermWeeks = function (calendar: Calendar) {
     return (
       <div className="term">
         {renderWeeks(calendar.weeks)}
-        {renderHoliday(calendar.holidays)}
-        {renderTermStatus(calendar)}
+        <TermStatus calendar={calendar} />
       </div>
     );
   }
 
   const renderCalendar = function () {
-    return termWeeks.map(t => {
+    return buildTerms(terms).map(t => {
 
       return (
         <section key={t.name} className="term-section">
