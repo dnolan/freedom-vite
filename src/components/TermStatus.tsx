@@ -1,4 +1,4 @@
-  import type { Calendar } from "./types";
+  import type { Calendar } from "../types";
 
   export function TermStatus({calendar}: {calendar: Calendar}) {
 
