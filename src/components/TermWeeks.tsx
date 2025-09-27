@@ -1,4 +1,4 @@
-import type { Calendar, Week } from "../types";
+import type { Calendar, Week, Day } from "../types";
 import clsx from "clsx";
 import { renderMonthNames } from "../datehelpers";
 
