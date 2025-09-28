@@ -40,8 +40,8 @@
 .term-section {
   background-color: hsl(0, 0%, 10%);
   padding: 10px;
-  margin-top: 40px;
-  margin-right: 10px;
+  /* margin-top: 40px; */
+  /* margin-right: 10px; */
   padding-bottom: 20px;
   border-radius: 10px;
   background: linear-gradient(180deg, hsl(0, 0%, 10%) 0%, hsl(0, 0%, 5%) 100%);
@@ -86,7 +86,7 @@ div.term > .week {
 }
 
 div.term > .week > .days {
-  gap: 4px;
+  gap: 3px;
   display: flex;  
   /* background-color: hsl(0, 0%, 20%); */
 }

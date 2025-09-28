@@ -24,7 +24,18 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   
+}
+
+body > .App {
   display:flex;
   min-height:100vh;
   margin-left: 15px;
+}
+
+body footer {
+  display: block;
+  margin-top: auto;
+  padding: 10px;
+  font-size: 0.8rem;
+  color: var(--foreground);
 }

@@ -5,6 +5,7 @@ import { Calendar } from './components/Calendar';
 
 export default function App() {
   return (
+    <>
     <div className="App">
       <Calendar />
 
@@ -26,6 +27,12 @@ export default function App() {
         </section>
       </div>
     </div>
+    <footer>
+      <p>Made by <a href="https://dnolan.com" target="_blank" rel="noreferrer">Daniel Nolan</a></p>
+      <p>Source code on <a href="https://github.com/dnolan/freedom-vite" target="_blank" rel="noreferrer">GitHub</a></p>
+      <p>Version {import.meta.env.VITE_APP_VERSION}</p>
+    </footer>
+    </>
   );
 }
 
