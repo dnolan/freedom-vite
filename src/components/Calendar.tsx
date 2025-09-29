@@ -147,7 +147,7 @@ export function Calendar() {
                 <section key={t.name} className="term-section">
                     <div className="title">
                         <h2>{t.name}</h2>
-                        <div>{t.start.toLocaleDateString("en-GB")} until {t.end.toLocaleDateString("en-GB")}</div>
+                        <div>{t.start.toLocaleDateString("en-GB")} to {t.end.toLocaleDateString("en-GB")}</div>
                     </div>
                     <TermView calendar={t.calendar!} />
                 </section>
