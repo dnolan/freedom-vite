@@ -47,6 +47,11 @@
   background: linear-gradient(180deg, hsl(0, 0%, 10%) 0%, hsl(0, 0%, 5%) 100%);
 }
 
+.term-section > .title > h2 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
 div.title {
   /* background-color: #141414; */
   /* margin-top: 40px; */
@@ -79,6 +84,8 @@ div.term > .week {
   align-items: center;    
   gap: 5px;
 }
+
+
 
 .week > .title > .month {
   color: var(--text-tertiary);
@@ -154,4 +161,24 @@ div.term > .week > .days {
   font-weight: bold;
   margin-left: 5px;
   /* color: var(--term-status-value); */
+}
+
+h1 {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: var(--text-primary);
+}
+
+.year-stats > ul {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid var(--text-secondary);
+  border-radius: 10px;
 }

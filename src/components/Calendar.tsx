@@ -1,11 +1,12 @@
 
-import type { Term, Calendar, Week, Day } from "../types";
-import { terms } from "../terms";
+import type { Term, Calendar, Week, Day, Stats } from "../types";
+import { terms as termData } from "../terms";
 import { useEffect, useState } from 'react';
 import { fetchBankHolidays } from '../bankholidays';
 import type { BankHoliday } from '../bankholidays';
 import { getEndOfWeek, getStartOfWeek } from '../datehelpers';
 import { TermView } from './TermView';
+import { CalendarStats } from './CalendarStats';
 
 export function Calendar() {
 
@@ -28,35 +29,32 @@ export function Calendar() {
         return terms.map((t: Term, index: number) => {
             const weeks = [...buildWeeks(t), ...buildHolidayWeeks(t, index)];
 
-            const totals = weeks.reduce((acc, week) => {
-                acc.schoolDays += week.days.filter(d => !d.holiday).length;
-                acc.completedDays += week.days.filter(d => d.completed).length;
-                acc.holidayDays += week.days.filter(d => d.holiday).length;
-                return acc;
-            }, { schoolDays: 0, completedDays: 0, holidayDays: 0 });
-
-            const holidayDays = totals.holidayDays;
-            const schoolDays = totals.schoolDays;
-            const completedDays = totals.completedDays;
-
-            const percentDone = Math.round((completedDays / schoolDays) * 100);
-            const totalDays = schoolDays + holidayDays;
-
             const calendar: Calendar = {
                 weeks: weeks,
                 count: weeks.length,
-                stats: {
-                    holidayDays: holidayDays,
-                    schoolDays: schoolDays,
-                    completedDays: completedDays,
-                    percentDone: percentDone,
-                    totalDays: totalDays
-                }
+                stats: buildStats(weeks)
             };
 
             return { ...t, calendar };
         })
     };
+
+    function buildStats(weeks: Week[]) {
+        const totals = weeks.reduce((acc, week) => {
+            acc.schoolDays += week.days.filter(d => !d.holiday).length;
+            acc.completedDays += week.days.filter(d => d.completed).length;
+            acc.holidayDays += week.days.filter(d => d.holiday).length;
+            return acc;
+        }, { schoolDays: 0, completedDays: 0, holidayDays: 0 });
+
+        const holidayDays = totals.holidayDays;
+        const schoolDays = totals.schoolDays;
+        const completedDays = totals.completedDays;
+
+        const percentDone = Math.round((completedDays / schoolDays) * 100);
+        const totalDays = schoolDays + holidayDays;
+        return { holidayDays, schoolDays, completedDays, percentDone, totalDays };
+    }
 
     function buildWeeks(t: Term, holiday: boolean = false): Week[] {
         const weeks: Week[] = [];
@@ -87,9 +85,9 @@ export function Calendar() {
     // Build holiday weeks between terms
     function buildHolidayWeeks(t: Term, index: number): Week[] {
 
-        if (terms.length > index + 1) {
+        if (termData.length > index + 1) {
             // This is janky, if the first day is not a monday
-            const nextTerm = terms[index + 1];
+            const nextTerm = termData[index + 1];
             const start = new Date(t.end);
             start.setDate(start.getDate() + 3);
             const end = new Date(nextTerm.start);
@@ -102,7 +100,7 @@ export function Calendar() {
 
     function weekDays(start: Date, end: Date, allHoliday: boolean = false): Day[] {
         const weekdays = [];
-        const currentDate = getStartOfWeek(start); //new Date(start);
+        const currentDate = getStartOfWeek(start);
         const now = new Date();
 
         while (currentDate <= end) {
@@ -143,18 +141,40 @@ export function Calendar() {
         return weekdays;
     }
 
-    return buildTerms(terms).map(t => {
+    function renderTerms(terms: Term[]) {
+        return terms.map(t => {
+            return (
+                <section key={t.name} className="term-section">
+                    <div className="title">
+                        <h2>{t.name}</h2>
+                        <div>{t.start.toLocaleDateString("en-GB")} until {t.end.toLocaleDateString("en-GB")}</div>
+                    </div>
+                    <TermView calendar={t.calendar!} />
+                </section>
+            )
+        });
+    }
 
+    function yearStats(terms: Term[]) : Stats {
+        const allStats = terms.flatMap(t => t.calendar?.stats || []);
+       
+        return allStats.reduce((acc, stats) => {
+            acc.schoolDays += stats.schoolDays;
+            acc.completedDays += stats.completedDays;
+            acc.holidayDays += stats.holidayDays;
+            acc.totalDays += stats.totalDays;
+            acc.percentDone = Math.round((acc.completedDays / acc.schoolDays) * 100);
+            return acc;
+        }, { schoolDays: 0, completedDays: 0, holidayDays: 0, percentDone: 0, totalDays: 0 });
+    }
 
-        return (
-            <section key={t.name} className="term-section">
-                <div className="title">
-                    <h1>{t.name}</h1>
-                    <div>{t.start.toLocaleDateString("en-GB")} until {t.end.toLocaleDateString("en-GB")}</div>
-                </div>
-                <TermView calendar={t.calendar!} />
-            </section>
-        )
-    })
+    const terms = buildTerms(termData);
 
+    return (
+        <>        
+            <h1>School Countdown</h1>
+            <CalendarStats stats={yearStats(terms)} />
+            {renderTerms(terms)}
+        </>
+    )
 }

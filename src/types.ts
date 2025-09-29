@@ -8,13 +8,15 @@ type Term = {
 type Calendar = {
   weeks: Week[];
   count: number;
-  stats: {
-    holidayDays: number;
-    schoolDays: number;
-    completedDays: number;
-    totalDays: number;
-    percentDone: number;
-  };
+  stats: Stats;
+};
+
+type Stats = {
+  holidayDays: number;
+  schoolDays: number;
+  completedDays: number;
+  percentDone: number;
+  totalDays: number;
 };
 
 type Week = {
@@ -32,4 +34,4 @@ type Day = {
 };
 
 
-export type { Term, Calendar, Week, Day };
+export type { Term, Calendar, Week, Day, Stats };

@@ -1,13 +1,14 @@
 # Todo
 - [ ] change colour of red to orange then yellow as term nears end
-- [ ] show percentage of year completed
 - [ ] Add unit tests for date calculations
-- [ ] show bank holidays and closures  
 - [ ] Tidy up theme
-- [ ] Use components for rendering
-- [ ] Set max-width of week title so it doesn't mess flow
+- [ ] Make none active terms toggleable
 
 ## Completed
+- [x] show percentage of year completed
+- [x] Set max-width of week title so it doesn't mess flow
+- [x] Use components for rendering
+- [x] show bank holidays and closures  
 - [x] Load bank holidays
 - [x] Support light mode
 - [x] Swap to vite for static deployment
