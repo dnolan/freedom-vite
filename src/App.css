@@ -74,6 +74,11 @@ div.term {
   flex-wrap: wrap;
 }
 
+.term-section.completed {
+  border: 2px solid var(--day-completed);
+  background-color: #021902;
+}
+
 div.term > .week {
   /* color: var(--text-secondary); */
   font-size: 0.8rem;

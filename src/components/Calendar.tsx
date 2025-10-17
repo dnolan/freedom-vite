@@ -7,6 +7,7 @@ import type { BankHoliday } from '../bankholidays';
 import { getEndOfWeek, getStartOfWeek } from '../datehelpers';
 import { TermView } from './TermView';
 import { CalendarStats } from './CalendarStats';
+import { clsx } from "clsx";
 
 export function Calendar() {
 
@@ -142,9 +143,16 @@ export function Calendar() {
     }
 
     function renderTerms(terms: Term[]) {
+
+
         return terms.map(t => {
+
+            const className = clsx("term-section", {
+              "completed": t.calendar!.stats.percentDone === 100
+            });
+
             return (
-                <section key={t.name} className="term-section">
+                <section key={t.name} className={className}>
                     <div className="title">
                         <h2>{t.name}</h2>
                         <div>{t.start.toLocaleDateString("en-GB")} to {t.end.toLocaleDateString("en-GB")}</div>
