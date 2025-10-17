@@ -16,6 +16,12 @@
   --text-tertiary: hsl(210, 14%, 50%);
   --term-status-text: hsl(43, 43%, 32%);
   --term-status-value: hsl(43, 83%, 36%);
+
+
+  --term-background: hsl(0, 0%, 5%);
+  --term-border: hsl(0, 0%, 20%);
+  --term-completed: hsl(120, 100%, 3%);
+  --term-completed-border: hsl(120, 72%, 10%);
 }
 
 @media (prefers-color-scheme: light) {
@@ -34,17 +40,25 @@
     --text-tertiary: lightslategray;
     --term-status-text: #74602e;
     --term-status-value: #dacaa4;
+    --term-background: hsl(0, 0%, 95%);
+    --term-border: hsl(0, 0%, 80%);
+    --term-completed: hsl(120, 100%, 90%);
+    --term-completed-border: hsl(120, 72%, 60%);
   }
 }
 
 .term-section {
-  background-color: hsl(0, 0%, 5%);
+  background-color: var(--term-background);
+  border: 1px solid  var(--term-border);
   padding: 10px;  
   padding-bottom: 20px;
   border-radius: 10px;
-  border: 1px solid hsl(0, 0%, 20%);;
   margin-bottom: 10px;
-  /* background: linear-gradient(180deg, hsl(0, 0%, 10%) 0%, hsl(0, 0%, 5%) 100%); */
+}
+
+.term-section.completed {
+  border: 2px solid var(--term-completed-border);
+  background-color: var(--term-completed);
 }
 
 .term-section > .title > h2 {
@@ -53,18 +67,10 @@
 }
 
 div.title {
-  /* background-color: #141414; */
-  /* margin-top: 40px; */  
   font-size: 1rem;
   display: flex;  
   gap: 20px;
   margin-bottom: 0.5rem;
-  /* color: var(--text-primary); */
-  /* flex-wrap: wrap; */
-}
-
-div.title div {
-  /* color: var(--text-secondary); */
 }
 
 div.term {
@@ -74,10 +80,6 @@ div.term {
   flex-wrap: wrap;
 }
 
-.term-section.completed {
-  border: 2px solid var(--day-completed);
-  background-color: #021902;
-}
 
 div.term > .week {
   /* color: var(--text-secondary); */
