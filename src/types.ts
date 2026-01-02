@@ -1,3 +1,9 @@
+type SchoolYear = {
+  terms: Term[];
+  start: Date;
+  end: Date;
+};
+
 type Term = {
   name: string;
   start: Date;
@@ -31,7 +37,8 @@ type Day = {
   completed: boolean;
   holiday: boolean;
   title?: string;
+  today: boolean;
 };
 
 
-export type { Term, Calendar, Week, Day, Stats };
+export type { Term, Calendar, Week, Day, Stats, SchoolYear };

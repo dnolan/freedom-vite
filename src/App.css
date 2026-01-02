@@ -134,6 +134,10 @@ div.term > .week > .days {
   color: var(--day-text-completed);
 }
 
+.days .day.today {
+  border: 2px solid var(--text-primary);
+}
+
 .days  .day.holiday,
 .days.holiday .day {
   background-color: var(--day-holiday);

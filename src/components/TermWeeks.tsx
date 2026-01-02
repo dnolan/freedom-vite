@@ -10,6 +10,7 @@ export function TermWeeks({ calendar }: { calendar: Calendar }) {
             const className = clsx("day",
                 d.completed && "completed",
                 d.holiday && "holiday",
+                d.today && "today"
             );
 
             return (
@@ -21,7 +22,7 @@ export function TermWeeks({ calendar }: { calendar: Calendar }) {
     return calendar.weeks.map((w: Week, index: number) => {
 
         const daysClass = clsx("days",
-            w.holiday && "holiday",
+            w.holiday && "holiday",            
         );
 
         return (

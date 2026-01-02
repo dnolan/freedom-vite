@@ -1,10 +1,11 @@
 # Todo
-- [ ] change colour of red to orange then yellow as term nears end
-- [ ] Add unit tests for date calculations
+- [ ] Change colour of red to orange then yellow as term nears end
 - [ ] Tidy up theme
 - [ ] Make none active terms toggleable
+- [ ] Add unit tests for date calculations
 
 ## Completed
+- [x] Allow multiple years
 - [x] show percentage of year completed
 - [x] Set max-width of week title so it doesn't mess flow
 - [x] Use components for rendering
