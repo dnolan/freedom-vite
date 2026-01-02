@@ -1,6 +1,6 @@
 
-import type { Term, Calendar, Week, Day, Stats } from "../types";
-import { terms as termData } from "../terms";
+import type { Term, Calendar, Week, Day, SchoolYear } from "../types";
+import { years as data } from "../terms";
 import { useEffect, useState } from 'react';
 import { fetchBankHolidays } from '../bankholidays';
 import type { BankHoliday } from '../bankholidays';
@@ -15,6 +15,7 @@ export function Calendar() {
     const dayFinishMinute = 30;
 
     const [bankHolidays, setBankHolidays] = useState<BankHoliday[] | null>(null);
+    const [selectedYear, setSelectedYear] = useState<SchoolYear | null>(getCurrentYear());
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,7 +29,7 @@ export function Calendar() {
     function buildTerms(terms: Term[]) {
 
         return terms.map((t: Term, index: number) => {
-            const weeks = [...buildWeeks(t), ...buildHolidayWeeks(t, index)];
+            const weeks = [...buildWeeks(t), ...buildHolidayWeeks(t, terms, index)];
 
             const calendar: Calendar = {
                 weeks: weeks,
@@ -84,11 +85,11 @@ export function Calendar() {
     }
 
     // Build holiday weeks between terms
-    function buildHolidayWeeks(t: Term, index: number): Week[] {
+    function buildHolidayWeeks(t: Term, terms: Term[], index: number): Week[] {
 
-        if (termData.length > index + 1) {
+        if (terms.length > index + 1) {
             // This is janky, if the first day is not a monday
-            const nextTerm = termData[index + 1];
+            const nextTerm = terms[index + 1];
             const start = new Date(t.end);
             start.setDate(start.getDate() + 3);
             const end = new Date(nextTerm.start);
@@ -98,48 +99,62 @@ export function Calendar() {
 
         return [];
     }
+    
+    function isWeekend(dayOfWeek: number) {
+        return dayOfWeek === 0 || dayOfWeek === 6;
+    }
 
     function weekDays(start: Date, end: Date, allHoliday: boolean = false): Day[] {
-        const weekdays = [];
+        const weekdays: Day[] = [];
         const currentDate = getStartOfWeek(start);
         const now = new Date();
 
         while (currentDate <= end) {
             const dayOfWeek = currentDate.getDay();
 
-            if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-
-                const cutOff = new Date(currentDate);
-                cutOff.setHours(dayFinishHour, dayFinishMinute, 0, 0);
-
-                let holiday: boolean = allHoliday || currentDate < start;
-                let title: string | undefined = undefined;
-
-                let bankHoliday: BankHoliday | undefined = bankHolidays?.find((h: BankHoliday) => {
-                    const holidayDate = new Date(h.date);
-                    return holidayDate.toDateString() === currentDate.toDateString();
-                });
-
-                if (bankHoliday) {
-                    holiday = true;
-                    title = bankHoliday.title;
-                }
-
-                const completed = (cutOff < now) && !holiday;
-
-                const day = {
-                    date: new Date(currentDate),
-                    completed,
-                    holiday,
-                    title: title
-                };
-                weekdays.push(day); // Add a copy of the date
+            if (isWeekend(dayOfWeek)) {
+                currentDate.setDate(currentDate.getDate() + 1);
+                continue;
             }
+
+            const day = BuildDay(currentDate, allHoliday, start, now);
+
+            weekdays.push(day); // Add a copy of the date        
 
             currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
         }
 
         return weekdays;
+    }
+
+    function BuildDay(currentDate: Date, allHoliday: boolean, start: Date, now: Date) : Day {
+        const cutOff = new Date(currentDate);
+        cutOff.setHours(dayFinishHour, dayFinishMinute, 0, 0);
+
+        let holiday: boolean = allHoliday || currentDate < start;
+        let title: string | undefined = undefined;
+
+        let bankHoliday: BankHoliday | undefined = bankHolidays?.find((h: BankHoliday) => {
+            const holidayDate = new Date(h.date);
+            return holidayDate.toDateString() === currentDate.toDateString();
+        });
+
+        if (bankHoliday) {
+            holiday = true;
+            title = bankHoliday.title;
+        }
+
+        const completed = (cutOff < now) && !holiday;
+
+        const day: Day = {
+            date: new Date(currentDate),
+            completed,
+            holiday,
+            title: title,
+            today: currentDate.toDateString() === now.toDateString()
+        };
+        
+        return day;
     }
 
     function renderTerms(terms: Term[]) {
@@ -148,7 +163,7 @@ export function Calendar() {
         return terms.map(t => {
 
             const className = clsx("term-section", {
-              "completed": t.calendar!.stats.percentDone === 100
+                "completed": t.calendar!.stats.percentDone === 100
             });
 
             return (
@@ -161,28 +176,47 @@ export function Calendar() {
                 </section>
             )
         });
+    }    
+
+    function getCurrentYear() : SchoolYear | null {
+        const now = new Date();
+        const currentYear = data.find(year => now >= year.start && now <= year.end);
+        return currentYear || null;
     }
 
-    function yearStats(terms: Term[]) : Stats {
-        const allStats = terms.flatMap(t => t.calendar?.stats || []);
-       
-        return allStats.reduce((acc, stats) => {
-            acc.schoolDays += stats.schoolDays;
-            acc.completedDays += stats.completedDays;
-            acc.holidayDays += stats.holidayDays;
-            acc.totalDays += stats.totalDays;
-            acc.percentDone = Math.round((acc.completedDays / acc.schoolDays) * 100);
-            return acc;
-        }, { schoolDays: 0, completedDays: 0, holidayDays: 0, percentDone: 0, totalDays: 0 });
+    function renderSchoolYear(year: SchoolYear) {
+        const terms = buildTerms(year.terms);
+
+        return (<>
+            <CalendarStats year={year} />
+            {renderTerms(terms)}
+        </>);
     }
 
-    const terms = buildTerms(termData);
+    function onYearSelected(event: React.ChangeEvent<HTMLSelectElement>) {
+        const foundYear = data.find(year => year.start.toISOString() === event.target.value);
+        setSelectedYear(foundYear || null);
+    }
+
+    function renderYearSelector() {
+        return (
+            <select onChange={onYearSelected} value={selectedYear ? selectedYear.start.toISOString() : ""}>
+                {data.map(year => (
+                    <option key={year.start.toISOString()} value={year.start.toISOString()}>
+                        {year.start.getFullYear()} / {year.end.getFullYear()}
+                    </option>
+                ))}
+            </select>
+        )
+    }
 
     return (
-        <>        
+        <>
             <h1>School Countdown</h1>
-            <CalendarStats stats={yearStats(terms)} />
-            {renderTerms(terms)}
+            {renderYearSelector()}
+            {selectedYear && renderSchoolYear(selectedYear)}
         </>
     )
 }
+
+
