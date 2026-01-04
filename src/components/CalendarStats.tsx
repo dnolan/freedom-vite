@@ -13,15 +13,14 @@ export function CalendarStats({ year }: { year: SchoolYear }) {
         return acc;
     }, { schoolDays: 0, completedDays: 0, holidayDays: 0, percentDone: 0, totalDays: 0 });
 
-
     return (
         <div className="year-stats">
             <ul>                
-                <li key={year.start.toISOString()}>Year: {year.start.getFullYear()} / {year.end.getFullYear()}</li>
-                <li>School: {stats.schoolDays}</li>
-                <li>Completed: {stats.completedDays}</li>
-                <li>Overall: {stats.percentDone}%</li>
-                <li>Holidays: {stats.holidayDays}</li>
+                <li key={year.start.toISOString()}><span className="title">Year</span> {year.start.getFullYear()} / {year.end.getFullYear()}</li>
+                <li><span className="title" title="Days in school">School Days</span> {stats.schoolDays}</li>
+                <li><span className="title" title="Completed days">Completed</span> {stats.completedDays}</li>
+                <li><span className="title" title="Percentage of days completed">Overall</span> {stats.percentDone}%</li>
+                <li><span className="title" title="Holiday days">Holidays</span> {stats.holidayDays}</li>
             </ul>
         </div>
     );

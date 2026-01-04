@@ -26,10 +26,10 @@ export function Calendar() {
     }, []);
 
     // Build each term into an array of weeks
-    function buildTerms(terms: Term[]) {
+    function buildYear(year: SchoolYear) : Term[] {
 
-        return terms.map((t: Term, index: number) => {
-            const weeks = [...buildWeeks(t), ...buildHolidayWeeks(t, terms, index)];
+        return year.terms.map((t: Term, index: number) => {
+            const weeks = [...buildWeeks(t), ...buildHolidayWeeks(t, year.terms, index)];
 
             const calendar: Calendar = {
                 weeks: weeks,
@@ -37,7 +37,8 @@ export function Calendar() {
                 stats: buildStats(weeks)
             };
 
-            return { ...t, calendar };
+            t.calendar = calendar;
+            return t;
         })
     };
 
@@ -157,10 +158,10 @@ export function Calendar() {
         return day;
     }
 
-    function renderTerms(terms: Term[]) {
+    function renderYear(year: SchoolYear) {
 
 
-        return terms.map(t => {
+        return year.terms.map(t => {
 
             const className = clsx("term-section", {
                 "completed": t.calendar!.stats.percentDone === 100
@@ -185,11 +186,11 @@ export function Calendar() {
     }
 
     function renderSchoolYear(year: SchoolYear) {
-        const terms = buildTerms(year.terms);
+        buildYear(year);
 
         return (<>
             <CalendarStats year={year} />
-            {renderTerms(terms)}
+            {renderYear(year)}
         </>);
     }
 
