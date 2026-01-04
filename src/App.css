@@ -192,4 +192,9 @@ h1 {
   padding: 10px;
   border: 1px solid var(--text-secondary);
   border-radius: 10px;
+  flex-wrap: wrap;
+}
+
+.year-stats .title {
+  font-weight: bold;
 }
