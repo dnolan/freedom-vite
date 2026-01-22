@@ -9,13 +9,12 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "deploy": "npm run build && wrangler deploy",
-    "test": "jest"
+    "test": "jest --watch"
   },
   "dependencies": {
     "clsx": "^2.1.1",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "surge": "^0.24.6"
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.28.5",
@@ -26,7 +25,7 @@
     "@eslint/js": "^9.33.0",
     "@jest/globals": "^30.2.0",
     "@types/react": "^19.1.10",
-    "@types/react-dom": "^19.1.7",
+    "@types/react-dom": "^19.1.10",
     "@vitejs/plugin-react": "^5.0.0",
     "babel-jest": "^30.2.0",
     "baseline-browser-mapping": "^2.9.11",
