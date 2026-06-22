@@ -22,7 +22,9 @@ const years: SchoolYear[] = [
       { name: "Autumn Term 1", start: new Date("2026-08-25"), end: new Date("2026-10-16") },
       { name: "Autumn Term 2", start: new Date("2026-11-03"), end: new Date("2026-12-18") },
       { name: "Spring Term 1", start: new Date("2027-01-04"), end: new Date("2027-02-12") },  
-      { name: "Spring Term 2", start: new Date("2027-02-22"), end: new Date("2027-03-25") }
+      { name: "Spring Term 2", start: new Date("2027-02-22"), end: new Date("2027-03-25") },  
+      { name: "Summer Term 1", start: new Date("2027-04-12"), end: new Date("2027-06-11") },
+      { name: "Summer Term 2", start: new Date("2027-06-22"), end: new Date("2027-07-16") }
     ]
   }
 ];
