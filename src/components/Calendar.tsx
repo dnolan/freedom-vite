@@ -4,9 +4,11 @@ import { years as data } from "../terms";
 import { useEffect, useState } from 'react';
 import { fetchBankHolidays } from '../bankholidays';
 import type { BankHoliday } from '../bankholidays';
+import { findSpecialDay, specialDays, countSchoolDays } from '../specialdays';
 import { getEndOfWeek, getStartOfWeek } from '../datehelpers';
 import { TermView } from './TermView';
 import { CalendarStats } from './CalendarStats';
+import { Countdown } from './Countdown';
 import { clsx } from "clsx";
 
 export function Calendar() {
@@ -145,12 +147,20 @@ export function Calendar() {
             title = bankHoliday.title;
         }
 
+        const specialDay = findSpecialDay(currentDate);
+        const special = !holiday && !!specialDay;
+
+        if (specialDay && !title) {
+            title = specialDay.name;
+        }
+
         const completed = (cutOff < now) && !holiday;
 
         const day: Day = {
             date: new Date(currentDate),
             completed,
             holiday,
+            special,
             title: title,
             today: currentDate.toDateString() === now.toDateString()
         };
@@ -211,9 +221,21 @@ export function Calendar() {
         )
     }
 
+    const graduation = specialDays.find(d => d.name === "Graduation");
+    const graduationYear = graduation && data.find(year => graduation.date >= year.start && graduation.date <= year.end);
+
+    let graduationSchoolDays = 0;
+    if (graduation && graduationYear) {
+        buildYear(graduationYear);
+        const days = graduationYear.terms.flatMap(t => t.calendar!.weeks.flatMap(w => w.days));
+        graduationSchoolDays = countSchoolDays(days, new Date(), graduation.date);
+    }
+
     return (
         <>
             <h1>School Countdown</h1>
+            {graduation && graduationYear &&
+                <Countdown label={graduation.name} date={graduation.date} schoolDays={graduationSchoolDays} />}
             {renderYearSelector()}
             {selectedYear && renderSchoolYear(selectedYear)}
         </>

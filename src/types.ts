@@ -36,6 +36,7 @@ type Day = {
   date: Date;
   completed: boolean;
   holiday: boolean;
+  special?: boolean;
   title?: string;
   today: boolean;
 };
