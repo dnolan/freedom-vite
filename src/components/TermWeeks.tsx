@@ -10,7 +10,8 @@ export function TermWeeks({ calendar }: { calendar: Calendar }) {
             const className = clsx("day",
                 d.completed && "completed",
                 d.holiday && "holiday",
-                d.today && "today"
+                d.today && "today",
+                d.special && "special"
             );
 
             return (

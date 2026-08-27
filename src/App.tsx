@@ -24,6 +24,10 @@ export default function App() {
             <div className="day holiday">1</div>
             <span>Holiday</span>
           </div>
+          <div className="key-entry">
+            <div className="day special">1</div>
+            <span>Special Day</span>
+          </div>
         </section>
       </div>
     </div>

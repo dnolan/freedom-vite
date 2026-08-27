@@ -11,6 +11,8 @@
   --day-holiday-border: hsl(214, 61%, 30%);
   --day-text-holiday: hsl(214, 61%, 20%);
 
+  --day-special-border: hsl(45, 90%, 45%);
+
   --text-primary: hsl(0, 0%, 90%);
   --text-secondary: hsl(45, 85%, 20%);
   --text-tertiary: hsl(210, 14%, 50%);
@@ -35,6 +37,7 @@
     --day-text-holiday: #1b6e1b;
     --day-text-future: #a94442;
     --day-text-completed: #4daa4d;
+    --day-special-border: #b8860b;
     --text-primary: #000000;
     --text-secondary: #553f07;
     --text-tertiary: lightslategray;
@@ -145,6 +148,10 @@ div.term > .week > .days {
   color: var(--day-text-holiday);
 }
 
+.days .day.special {
+  border: 2px dashed var(--day-special-border);
+}
+
 .key h2 {
   margin-top: 20px;
 }
@@ -180,6 +187,25 @@ h1 {
   margin-bottom: 20px;
   font-size: 2rem;
   color: var(--text-primary);
+}
+
+.countdown {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+.countdown-days {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--day-special-border);
+}
+
+.countdown-label {
+  font-size: 1rem;
 }
 
 .year-stats > ul {
